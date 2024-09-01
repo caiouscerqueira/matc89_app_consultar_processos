@@ -1,22 +1,16 @@
 import 'package:flutter/material.dart';
-import 'cadastroProcessoPage.dart';
-import 'consultaProcessoPage.dart';
-import 'avaliacaoProcessoPage.dart';
-import 'repository.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'widgets/cadastro_processo_page.dart';
+import 'widgets/consulta_processo_page.dart';
+import 'widgets/avaliacao_processo_page.dart';
+import 'repositories/processo_repository.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final repository = Repository();
-  await repository.initialize();
-
-  runApp(MyApp(repository: repository));
+  runApp(ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
-  final Repository repository;
-
-  MyApp({required this.repository});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -24,21 +18,17 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: HomePage(repository: repository),
+      home: HomePage(),
       routes: {
-        '/cadastro': (context) => CadastroProcessoPage(repository: repository),
-        '/consulta': (context) => ConsultaProcessoPage(repository: repository),
-        '/avaliacao': (context) => AvaliacaoProcessoPage(repository: repository),
+        '/cadastro': (context) => CadastroProcessoPage(),
+        '/consulta': (context) => ConsultaProcessoPage(),
+        '/avaliacao': (context) => AvaliacaoProcessoPage(),
       },
     );
   }
 }
 
 class HomePage extends StatelessWidget {
-  final Repository repository;
-
-  HomePage({required this.repository});
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
