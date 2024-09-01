@@ -1,0 +1,19 @@
+class Repository {
+  final Map<String, String> _dadosProcessos = {
+    '12345': 'Aprovado - Documentos completos.',
+    '67890': 'Em análise - Documentos pendentes.',
+    '54321': 'Rejeitado - Documentação incorreta.',
+  };
+
+  String? fetchProcess(String numeroProcesso) {
+    return _dadosProcessos[numeroProcesso];
+  }
+
+  void saveProcess(String numeroProcesso, String status) {
+    _dadosProcessos[numeroProcesso] = status;
+  }
+
+  bool containsProcess(String numeroProcesso) {
+    return _dadosProcessos.containsKey(numeroProcesso);
+  }
+}
