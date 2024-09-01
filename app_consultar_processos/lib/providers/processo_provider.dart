@@ -1,6 +1,6 @@
-import flutter_riverpod
-import flutter
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../controllers/processo_controller.dart';
 import '../repositories/processo_repository.dart';
 import '../services/processo_service.dart';
