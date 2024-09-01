@@ -1,16 +1,29 @@
 class Service {
   final Repository _repository = Repository();
 
-  String? consultarProcesso(String numeroProcesso) {
-    return _repository.fetchProcess(numeroProcesso);
+  Future<void> initialize() async {
+    await _repository.openConnection();
   }
 
-  bool cadastrarProcesso(String numeroProcesso) {
-    if (_repository.containsProcess(numeroProcesso)) {
+  Future<void> dispose() async {
+    await _repository.closeConnection();
+  }
+
+  Future<String?> consultarProcesso(String numeroProcesso) async {
+    final processo = await _repository.fetchProcess(numeroProcesso);
+    return processo?.status;
+  }
+
+  Future<bool> cadastrarProcesso(String numeroProcesso) async {
+    if (await _repository.containsProcess(numeroProcesso)) {
       return false;
     } else {
-      _repository.saveProcess(numeroProcesso, 'Aberto - Aguardando análise.');
+      await _repository.saveProcess(Processo(numeroProcesso: numeroProcesso));
       return true;
     }
+  }
+
+  Future<void> avaliarProcesso(String numeroProcesso, String novoStatus) async {
+    await _repository.updateProcessStatus(numeroProcesso, novoStatus);
   }
 }
