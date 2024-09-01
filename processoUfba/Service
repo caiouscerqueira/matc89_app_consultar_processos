@@ -1,0 +1,16 @@
+class Service {
+  final Repository _repository = Repository();
+
+  String? consultarProcesso(String numeroProcesso) {
+    return _repository.fetchProcess(numeroProcesso);
+  }
+
+  bool cadastrarProcesso(String numeroProcesso) {
+    if (_repository.containsProcess(numeroProcesso)) {
+      return false;
+    } else {
+      _repository.saveProcess(numeroProcesso, 'Aberto - Aguardando análise.');
+      return true;
+    }
+  }
+}
