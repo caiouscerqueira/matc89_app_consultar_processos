@@ -1,0 +1,31 @@
+class Controller {
+  final Service _service = Service();
+
+  String? consultarProcesso(String numeroProcesso) {
+    if (numeroProcesso.isEmpty) {
+      return 'O número do processo não pode ser vazio.';
+    }
+
+    final status = _service.consultarProcesso(numeroProcesso);
+
+    if (status == null) {
+      return 'Processo não encontrado!';
+    }
+
+    return status;
+  }
+
+  String cadastrarProcesso(String numeroProcesso) {
+    if (numeroProcesso.isEmpty) {
+      return 'O número do processo não pode ser vazio.';
+    }
+
+    final sucesso = _service.cadastrarProcesso(numeroProcesso);
+
+    if (sucesso) {
+      return 'Processo cadastrado com sucesso!';
+    } else {
+      return 'Número de processo inválido ou já existente.';
+    }
+  }
+}
