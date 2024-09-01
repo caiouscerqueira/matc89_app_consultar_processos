@@ -1,19 +1,58 @@
+import 'package:postgres/postgres.dart';
+
 class Repository {
-  final Map<String, String> _dadosProcessos = {
-    '12345': 'Aprovado - Documentos completos.',
-    '67890': 'Em análise - Documentos pendentes.',
-    '54321': 'Rejeitado - Documentação incorreta.',
-  };
+  final PostgreSQLConnection _connection;
 
-  String? fetchProcess(String numeroProcesso) {
-    return _dadosProcessos[numeroProcesso];
+  Repository()
+      : _connection = PostgreSQLConnection(
+          'localhost', // Host
+          5432, // Porta padrão do PostgreSQL
+          'meu_banco_de_dados', // Nome do banco de dados
+          username: 'postgres', // Usuário do PostgreSQL
+          password: 'postgres', // Senha do PostgreSQL
+        );
+
+  Future<void> openConnection() async {
+    await _connection.open();
   }
 
-  void saveProcess(String numeroProcesso, String status) {
-    _dadosProcessos[numeroProcesso] = status;
+  Future<void> closeConnection() async {
+    await _connection.close();
   }
 
-  bool containsProcess(String numeroProcesso) {
-    return _dadosProcessos.containsKey(numeroProcesso);
+  Future<String?> fetchProcess(String numeroProcesso) async {
+    List<List<dynamic>> results = await _connection.query(
+      'SELECT status FROM processos WHERE numero_processo = @numero',
+      substitutionValues: {
+        'numero': numeroProcesso,
+      },
+    );
+
+    if (results.isNotEmpty) {
+      return results.first[0] as String?;
+    } else {
+      return null;
+    }
+  }
+
+  Future<void> saveProcess(String numeroProcesso, String status) async {
+    await _connection.query(
+      'INSERT INTO processos (numero_processo, status) VALUES (@numero, @status)',
+      substitutionValues: {
+        'numero': numeroProcesso,
+        'status': status,
+      },
+    );
+  }
+
+  Future<bool> containsProcess(String numeroProcesso) async {
+    List<List<dynamic>> results = await _connection.query(
+      'SELECT 1 FROM processos WHERE numero_processo = @numero LIMIT 1',
+      substitutionValues: {
+        'numero': numeroProcesso,
+      },
+    );
+
+    return results.isNotEmpty;
   }
 }
