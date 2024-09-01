@@ -20,24 +20,34 @@ class Repository {
     await _connection.close();
   }
 
-  Future<String?> fetchProcess(String numeroProcesso) async {
+  Future<Processo?> fetchProcess(String numeroProcesso) async {
     List<List<dynamic>> results = await _connection.query(
-      'SELECT status FROM processos WHERE numero_processo = @numero',
+      'SELECT numero_processo, status FROM processos WHERE numero_processo = @numero',
       substitutionValues: {
         'numero': numeroProcesso,
       },
     );
 
     if (results.isNotEmpty) {
-      return results.first[0] as String?;
+      return Processo(numeroProcesso: results.first[0] as String, status: results.first[1] as String);
     } else {
       return null;
     }
   }
 
-  Future<void> saveProcess(String numeroProcesso, String status) async {
+  Future<void> saveProcess(Processo processo) async {
     await _connection.query(
       'INSERT INTO processos (numero_processo, status) VALUES (@numero, @status)',
+      substitutionValues: {
+        'numero': processo.numeroProcesso,
+        'status': processo.status,
+      },
+    );
+  }
+
+  Future<void> updateProcessStatus(String numeroProcesso, String status) async {
+    await _connection.query(
+      'UPDATE processos SET status = @status WHERE numero_processo = @numero',
       substitutionValues: {
         'numero': numeroProcesso,
         'status': status,
